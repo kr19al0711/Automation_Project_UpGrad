@@ -73,5 +73,5 @@ then
 else
         echo "Cron file doesn't exist"
         echo "Scheduling cron job to run at 11:00am everyday"
-        echo "* * * * * root /root/Automation_Project_UpGrad/automation.sh" > $cronfile
+        echo "0 11 * * * root /root/Automation_Project_UpGrad/automation.sh" > $cronfile
 fi
