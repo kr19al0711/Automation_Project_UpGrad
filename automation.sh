@@ -5,6 +5,8 @@ echo "Running script from $(pwd)"
 tempdir="/tmp"
 s3bucket="upgrad-kripal"
 name="Kripal_Parsekar"
+invhtml="/var/www/html/inventory.html"
+cronfile="/etc/cron.d/automation"
 
 #Updating Package Details
 sudo apt update -y
@@ -48,3 +50,28 @@ tar cfv "${tempdir}/${logfilename}.tar" access.log error.log other_vhosts_access
 
 #Uploading to S3
 aws s3 cp "${tempdir}/${logfilename}.tar" "s3://${s3bucket}/${logfilename}.tar"
+
+#Checking if inventory.html exist
+if [ -e $invhtml ]
+then
+        echo "inventory.html already exist"
+else
+        echo "inventory.html doesn't exist"
+        echo "Creating inventory.html at $invhtml"
+        echo "Log Type     Time Created    Type    Size<br>" > $invhtml
+fi
+
+#Logging entry in inventory
+logString="Apache2-logs         $timestamp              tar             blank<br>"
+echo $logString >> $invhtml
+
+
+#Checking if automation cron file is present
+if [ -e $cronfile ]
+then
+        echo "Cron file already exist"
+else
+        echo "Cron file doesn't exist"
+        echo "Scheduling cron job to run at 11:00am everyday"
+        echo "* * * * * root /root/Automation_Project_UpGrad/automation.sh" > $cronfile
+fi
